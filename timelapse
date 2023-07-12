@@ -1,0 +1,75 @@
+#!/bin/bash -e
+
+# Define global parameters
+starttime=""
+outdir=./outdir
+framerate=$1
+if [ ! "$1" -eq "$1" ]; then
+	framerate=24
+fi
+
+yn() {
+    while true; do
+        read -p "$* [y/n]: " yn
+        case $yn in
+            [Yy]*) return 0  ;;  
+            [Nn]*) echo "Aborted" ; return  1 ;;
+        esac
+    done
+}
+
+copyfiles() {
+	# Create copies of the source images to work on.
+	# Never overwrite the source images.
+	# If the destination folder already exists, prompt to reset it.
+	if [ -d "$outdir" ] ; then
+		yn "Delete existing files in $outdir and redo the task?"
+		rm -rf "$outdir"
+	fi
+	# Rename the copied files according to their creation timestamps.
+	echo "[exiftool] Copying and renaming files..."
+	exiftool -o "$outdir/" -d "%Y-%m-%d__%H_%M_%S.png" "-filename<CreateDate" .
+}
+
+addtimestamp() {
+	# Get the timestamp from the file name.
+	local filename=$(basename -- "$1")
+	local extension="${filename##*.}"
+	filename="${filename%.*}"
+	local snapshottime=$(echo "$filename" | sed "s|__| |g" | sed "s|_|:|g")
+	snapshottime=$(date -u -d "$snapshottime" +"%s")
+	
+	# If this is the first image in the series, make it time zero.
+	if [ "$starttime" == "" ]; then
+		starttime=$snapshottime		
+	fi
+	
+	# Compute the elapsed time for the current snapshot.
+	local elapsedtime=$(date -u -d "2012/1/1 $snapshottime sec - $starttime sec" +"Day %j %H:%M:%S")
+	
+	# Overlay timestamp in the lower right corner of the image.
+	echo "[imagemagick] Processing snapshot: $elapsedtime..."
+	convert "$1" \
+		-gravity SouthEast \
+		-pointsize 48 \
+		-undercolor black \
+		-fill white \
+		-annotate +30+30 "$elapsedtime" \
+		"$outdir/$filename.$extension"
+}
+
+makemovie() {
+	# Stitch together the image stack to make a movie.
+	echo "[ffmpeg] Encoding movie (framerate = $framerate)..."
+	cat "$outdir"/*.png | ffmpeg -r $framerate -i - "$outdir/timelapse.mp4"
+}
+
+init() {
+	copyfiles
+	for image in "$outdir"/*.png; do
+		addtimestamp "$image"
+	done
+	makemovie
+}
+
+init
