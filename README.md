@@ -10,8 +10,12 @@ You need to capture the still images separately. This script does not deal with 
 2. Download the timelapse bash script and save it to an executable path, e.g., /usr/local/bin or ~/.local/bin. This allows you to execute the script anywhere across the file system. Alternatively, you may save the script to the same folder containing the source images and execute it only within that folder.
 3. `cd` to the folder where you have saved the timelapse script, and make the script executable: `chmod +x timelapse`.
 4. In a terminal, `cd` to the source image folder.
-5. Execute the script: `timelapse` if you've installed it to an executable path, or `./timestamp` if you're executing it from the source image folder.
-6. The snapshots and the video can be found under ./outdir.
+5. Execute the script:
+
+   - `timelapse` if you've installed it to an executable path
+   - `./timestamp` if you're executing it from the source image folder
+     
+7. The snapshots and the video can be found under ./outdir.
 
 ## Dependencies
 
