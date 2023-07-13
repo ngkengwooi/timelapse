@@ -21,7 +21,7 @@ You need to capture the still images separately. This script does not deal with 
 
 The timelapse script is written for the bash shell, which is shipped with many Linux distributions. You may be able to get it working on other operating systems if you can get the dependencies working, e.g., using the [Windows Subsystem for Linux](https://www.howtogeek.com/249966/how-to-install-and-use-the-linux-bash-shell-on-windows-10/).
 
-- bash
-- exiftool
-- ffmpeg
-- imagemagick
+- [bash](https://www.gnu.org/software/bash)
+- [exiftool](https://exiftool.org)
+- [ffmpeg](https://ffmpeg.org)
+- [imagemagick](https://imagemagick.org)
