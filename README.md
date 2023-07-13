@@ -12,8 +12,8 @@ You need to capture the still images separately. This script does not deal with 
 4. In a terminal, `cd` to the source image folder.
 5. Execute the script:
 
-   - `timelapse` if you've installed it to an executable path
-   - `./timestamp` if you're executing it from the source image folder
+  - `timelapse` if you've installed it to an executable path
+  - `./timestamp` if you're executing it from the source image folder
      
 7. The snapshots and the video can be found under ./outdir.
 
