@@ -2,7 +2,7 @@
 
 Timelapse macro photography for laboratory investigations
 
-The bash script timelapse creates a timelapse video from a series of still images. It overlays the timestamp on to each frame/snapshot, so a ticking clock appears in the video. The timestamp is extracted from the metadata (creation date) of the image file.
+The bash script timelapse creates a timelapse video from a series of still images. It overlays the timestamp on to each frame/snapshot, so a ticking clock appears in the lower right corner of the video. The timestamp is extracted from the metadata (creation date) of the image files.
 
 ## Usage
 
