@@ -8,9 +8,9 @@ The bash script timelapse creates a timelapse video from a series of still image
 
 You need to capture the still images separately. This script does not deal with the image capture, but the post-processing. The images should lend themselves to be compiled into a movie, e.g., the dimensions should be constant and the camera angle should not change.
 
-1. Download the timelapse bash script and save it to a suitable location, e.g., /usr/loca/bin or ~/.local/bin.
-2. Make sure the timelapse bash script is executable: `chmd +x timelapse`
-3. Place all source images in a single folder.
+1. Place all source images in a single folder.
+2. Download the timelapse bash script and save it to an executable path, e.g., /usr/local/bin or ~/.local/bin. This allows you to execute the script anywhere across the file system. Alternatively, you may save the script to the same folder containing the source images and execute it only within that folder.
+3. Make sure the timelapse bash script is executable: `chmd +x timelapse`.
 4. In a terminal, `cd` to the source image folder.
 5. Execute the script: `./timelapse`.
 6. The snapshots and the video can be found under ./outdir.
