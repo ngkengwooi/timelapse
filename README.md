@@ -20,7 +20,7 @@ The script will:
 
 These parameters can be changed by passing arguments to the `timelapse` command. Execute `timelapse -h` for details.
 
-To rename files to the required format: `<yyyymmddHHMMSS>.png`, you may use the following tools:
+To rename files to the required format (`<yyyymmddHHMMSS>.png`) without the `timelapse` script, you may use the following third-party tools:
 
 - [Thunar Bulk Renamer](https://docs.xfce.org/xfce/thunar/bulk-renamer/start)
 - [GPRename](https://gprename.sourceforge.net)
