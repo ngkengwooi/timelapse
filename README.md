@@ -22,9 +22,9 @@ These parameters can be changed by passing arguments to the `timelapse` command.
 
 To rename files to the required format: `<yyyymmddHHMMSS>.png`, you may use the following tools:
 
-- [Thunar Bulk Renamer](https://docs.xfce.org/xfce/thunar/bulk-renamer/start) (Linux)
-- [GPRename](https://gprename.sourceforge.net) (Linux)
-- [ReNamer](https://www.den4b.com/products/renamer) (Windows)
+- [Thunar Bulk Renamer](https://docs.xfce.org/xfce/thunar/bulk-renamer/start)
+- [GPRename](https://gprename.sourceforge.net)
+- [ReNamer](https://www.den4b.com/products/renamer)
 
 ## Dependencies
 
