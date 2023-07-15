@@ -23,7 +23,7 @@ By default, the script will:
 
 The behaviour of `timelapse` can be configured by passing certain arguments to the `timelapse` command. For details, execute `timelapse -h`.
 
-By default, the script expects the image file name to reflect the timestamp in the format: `<yyyymmddHHMMSS>.png`. Variants including delimiters (e.g., `yyyy-mm-dd-HH-MM-SS.png`) are acceptable. The script will strip the file name of any non-numerical characters to generate the timestamp. The file name must correspond to a valid timestamp in the format `yyyymmddHHMMSS` when stripped of such characters. The file extension can vary depending on the file format. The script supports most common image file formats (e.g., jpg, tif, bmp, webp) as long as imagemagick can convert them into the PNG format. However, all the images in the series must be of the same format.
+By default, the script expects the image file name to reflect the timestamp in the format: `<yyyymmddHHMMSS>.png`. Variants including delimiters (e.g., `yyyy-mm-dd-HH-MM-SS.png`) are acceptable. The script will strip the file name of any non-numerical characters to generate the timestamp. The file name must correspond to a valid timestamp in the format `yyyymmddHHMMSS` when stripped of such characters. The file extension can vary depending on the file format. The script supports most common image file formats (e.g., with extensions .jpg, .tif, .bmp, .webp) as long as imagemagick can convert them into the PNG format. However, all the images in the series must be of the same format.
 
 The position of the timestamp and its appearance can also be configured. 
 
