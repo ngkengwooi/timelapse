@@ -14,7 +14,7 @@ You need to capture the still images separately. This script does not deal with 
 By default, the script expects the image file name to reflect the timestamp in the format: `<yyyymmddHHMMSS>.png`. 
 
 The script will:
-- Create a ./timestamp folder within the source image folder
+- Create a `./timestamp` folder within the source image folder
 - Timestamp the source images and save them to `./timelapse/<yyyymmddHHMMSS>.png`
 - Compile the video and save it as `./timelapse/timelapse.mp4` 
 
