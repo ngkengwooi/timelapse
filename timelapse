@@ -95,7 +95,7 @@ getTimestamp() {
 	# If the image file contains metadata that includes the creation date,
 	# use the -e option to rename the files based on their creation dates.
 	# Otherwise, the files must be renamed first by other means 
-	# to match the required format before running this script.
+	# to adhere to the required format before running this script.
 	local filename="$(basename "$1" ".$filetype")"
 	filename=$(echo "$filename" | sed -E "s|[^0-9]+||g")
 	local year=${filename:0:4}
@@ -116,7 +116,7 @@ overlayTimestamp() {
 	# It is important that the images have been sorted in ascending order.
 	# See main() for file sorting.
 	if [ "$timezero" == "" ]; then
-		timezero=$timestamp		
+		timezero="$timestamp"
 	fi
 	
 	# Compute the elapsed time for the current snapshot.
@@ -127,10 +127,10 @@ overlayTimestamp() {
 	printf "Timestamping $filename ($timediff)... "
 	
 	convert "$1" \
-		-gravity $position \
-		-pointsize $fontsize \
-		-undercolor $bgcolour \
-		-fill $fgcolour \
+		-gravity "$position" \
+		-pointsize "$fontsize" \
+		-undercolor "$bgcolour" \
+		-fill "$fgcolour" \
 		-annotate +0+0 "$timediff" \
 		"$workdir/$(basename "$filename" ".$filetype").png" && echo "done." || (echo "failed." && exit 1)
 }
@@ -138,7 +138,7 @@ overlayTimestamp() {
 animate() {
 	# Dependency: ffmpeg
 	echo "Encoding $output ($framerate fps)..."
-	ffmpeg -r $framerate \
+	ffmpeg -r "$framerate" \
 		-pattern_type glob \
 		-i "$workdir/*.png" \
 		"$workdir/$output"
@@ -152,8 +152,6 @@ main() {
 	echo "Working directory : $(realpath "$workdir")"
 	
 	if [ "$mode" == "full" ]; then
-		# Create copies of the source images to $workdir.
-		# Never overwrite the original source images.
 		# If $workdir already exists, prompt to reset it.
 		if [ -d "$workdir" ] ; then
 			confirm "Overwrite all existing files in $workdir?"
@@ -166,7 +164,6 @@ main() {
 		# Optionally, rename files
 		if [ "$rename" == "yes" ]; then
 			renameFiles
-			exit
 		fi
 		
 		# Sort the files in the current folder in ascending order.
