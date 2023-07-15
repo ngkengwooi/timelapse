@@ -1,75 +1,208 @@
 #!/bin/bash -e
+################################################################################
+# timelapse
+# A bash shell script to create timelapse videos from a series of still images.
+# Author: Keng Wooi Ng
+# Website: https://linktr.ee/ngkengwooi
+################################################################################
 
-# Define global parameters
-starttime=""
-outdir=./outdir
-framerate=$1
-if [ ! "$1" -eq "$1" ]; then
-	framerate=24
-fi
+# Define default variables
+DEFAULT_FILETYPE=png
+DEFAULT_FONTSIZE=40
+DEFAULT_BGCOLOUR=black
+DEFAULT_FGCOLOUR=white
+DEFAULT_FRAMERATE=10
+DEFAULT_POSITION=SouthEast
+DEFAULT_OUTPUT=timelapse.mp4
+DEFAULT_INPUTDIR=./
+DEFAULT_WORKDIR=./timelapse
+DEFAULT_MODE=full
+DEFAULT_RENAME=no
 
-yn() {
+# User-defined parameters
+filetype="$DEFAULT_FILETYPE"
+fontsize="$DEFAULT_FONTSIZE"
+bgcolour="$DEFAULT_BGCOLOUR"
+fgcolour="$DEFAULT_FGCOLOUR"
+framerate="$DEFAULT_FRAMERATE"
+position="$DEFAULT_POSITION"
+output="$DEFAULT_OUTPUT"
+inputdir="$DEFAULT_INPUTDIR"
+workdir="$DEFAULT_WORKDIR"
+mode="$DEFAULT_MODE"
+rename="$DEFAULT_RENAME"
+
+usage() {
+	echo "Usage:"
+	echo ""
+	echo "  `basename "$0"` <options>"
+	echo ""
+	echo "  Options:"
+	echo "    -b BGCOLOUR      Background colour (default = $DEFAULT_BGCOLOUR)"
+	echo "    -d DIRECTORY     Output video file name (default = $DEFAULT_WORKDIR)"
+	echo "    -e               Rename source files based on extracted metadata"
+	echo "    -f FONTCOLOUR    Font colour (default = $DEFAULT_FGCOLOUR)"
+	echo "    -h               Show this help message"
+	echo "    -o FILENAME      Output video file name (default = $DEFAULT_OUTPUT)"
+	echo "    -p POSITION      Timer position (default = $DEFAULT_POSITION)"
+	echo "    -r FRAMERATE     Video frame rate in fps (default = $DEFAULT_FRAMERATE)"
+	echo "    -s FONTSIZE      Font size in ponts (default = $DEFAULT_FONTSIZE)"
+	echo "    -t FILETYPE      Source image file type (default = $DEFAULT_FILETYPE)"
+	echo "    -v               Recreate video only, skip timestamping"
+	echo ""
+}
+
+confirm() {
     while true; do
-        read -p "$* [y/n]: " yn
-        case $yn in
+        read -p "$* [y/n]: " confirm
+        case $confirm in
             [Yy]*) return 0 ;;  
-            [Nn]*) echo "Aborted" ; return  1 ;;
+            [Nn]*) echo "Operation aborted."; return  1 ;;
         esac
     done
 }
 
-copyfiles() {
-	# Create copies of the source images to work on.
-	# Never overwrite the source images.
-	# If the destination folder already exists, prompt to reset it.
-	if [ -d "$outdir" ] ; then
-		yn "Delete existing files in $outdir and redo the task?"
-		rm -rf "$outdir"
-	fi
-	# Rename the copied files according to their creation timestamps.
-	echo "[exiftool] Copying and renaming files..."
-	exiftool -o "$outdir/" -d "%Y-%m-%d__%H_%M_%S.png" "-filename<CreateDate" .
+renameFiles() {
+	# Perform a dry run first to check that all images have the required metadata.
+	# Do not rename any image if any of the images lack the require metadata.
+	# Dependency: exiftool
+	for image in "$inputdir"/*.$filetype; do
+		printf "Checking metadata for $(basename -- "$image")... "
+		(exiftool "$image" | egrep "Create Date|Date/Time Original" > /dev/null && echo "OK.") || \
+			(echo "failed." && echo "Cannot rename files." && exit 1)
+	done
+	# All images support the required metadata.
+	# Proceed to rename the files.
+	echo "Renaming files..."
+	for image in "$inputdir"/*.$filetype; do
+		filename="$(exiftool "$image" | \
+			egrep "Create Date|Date/Time Original" | \
+			egrep -om 1 "[0-9]{4}:[0-9]{2}:[0-9]{2} [0-9]{2}:[0-9]{2}:[0-9]{2}" | \
+			sed -E "s|[^0-9]+||g").$filetype"
+		# Rename file, ignoring errors.
+		mv -v "$image" "$inputdir/$filename" || true 
+	done
 }
 
-addtimestamp() {
-	# Get the timestamp from the file name.
-	local filename=$(basename -- "$1")
-	local extension="${filename##*.}"
-	filename="${filename%.*}"
-	local snapshottime=$(echo "$filename" | sed "s|__| |g" | sed "s|_|:|g")
-	snapshottime=$(date -u -d "$snapshottime" +"%s")
+getTimestamp() {
+	# This function generates the timestamp based on the image file name.
+	# The image file name must follow the following format:
+	#     yyyymmddHHMMSS.$filetype
+	# where $filetype denotes the file extension, e.g., jpg, png.
+	# Variants that include common separators are acceptable.
+	# Such separators will be ignored when generating the timestamp.
+	# Example: hyphens in yyyy-mm-dd-HH-MM-SS will be ignored.
+	# If the image file contains metadata that includes the creation date,
+	# use the -e option to rename the files based on their creation dates.
+	# Otherwise, the files must be renamed first by other means 
+	# to match the required format before running this script.
+	local filename="$(basename "$1" ".$filetype")"
+	filename=$(echo "$filename" | sed -E "s|[^0-9]+||g")
+	local year=${filename:0:4}
+	local month=${filename:4:2}
+	local day=${filename:6:2}
+	local hour=${filename:8:2}
+	local minute=${filename:10:2}
+	local second=${filename:12:2}
+	echo "$year-$month-$day $hour:$minute:$second"
+}
+
+overlayTimestamp() {
+	# Generate timestamp for image based on file name.
+	local filename="$1"
+	local timestamp="$(date -u -d "$(getTimestamp "$filename")" +"%s")"
 	
 	# If this is the first image in the series, make it time zero.
-	if [ "$starttime" == "" ]; then
-		starttime=$snapshottime		
+	# It is important that the images have been sorted in ascending order.
+	# See main() for file sorting.
+	if [ "$timezero" == "" ]; then
+		timezero=$timestamp		
 	fi
 	
 	# Compute the elapsed time for the current snapshot.
-	local elapsedtime=$(date -u -d "2012/1/1 $snapshottime sec - $starttime sec" +"Day %j %H:%M:%S")
+	local timediff=$(date -u -d "1970/01/01 $timestamp sec - $timezero sec" +"Day %j %H:%M:%S")
 	
 	# Overlay timestamp in the lower right corner of the image.
-	echo "[imagemagick] Processing snapshot: $elapsedtime..."
+	# Dependency: imagemagick
+	printf "Timestamping $filename ($timediff)... "
+	
 	convert "$1" \
-		-gravity SouthEast \
-		-pointsize 48 \
-		-undercolor black \
-		-fill white \
-		-annotate +30+30 "$elapsedtime" \
-		"$outdir/$filename.$extension"
+		-gravity $position \
+		-pointsize $fontsize \
+		-undercolor $bgcolour \
+		-fill $fgcolour \
+		-annotate +0+0 "$timediff" \
+		"$workdir/$(basename "$filename" ".$filetype").png" && echo "done." || (echo "failed." && exit 1)
 }
 
-makemovie() {
-	# Stitch together the image stack to make a movie.
-	echo "[ffmpeg] Encoding movie (framerate = $framerate)..."
-	cat "$outdir"/*.png | ffmpeg -r $framerate -i - "$outdir/timelapse.mp4"
+animate() {
+	# Dependency: ffmpeg
+	echo "Encoding $output ($framerate fps)..."
+	ffmpeg -r $framerate \
+		-pattern_type glob \
+		-i "$workdir/*.png" \
+		"$workdir/$output"
 }
 
-init() {
-	copyfiles
-	for image in "$outdir"/*.png; do
-		addtimestamp "$image"
-	done
-	makemovie
+main() {
+	# Remove trailing slash from paths.
+	workdir="$(echo "$workdir" | sed -E "s|/+$||")"
+	inputdir="$(echo "$inputdir" | sed -E "s|/+$||")"
+	echo "Source folder     : $(realpath "$inputdir")"
+	echo "Working directory : $(realpath "$workdir")"
+	
+	if [ "$mode" == "full" ]; then
+		# Create copies of the source images to $workdir.
+		# Never overwrite the original source images.
+		# If $workdir already exists, prompt to reset it.
+		if [ -d "$workdir" ] ; then
+			confirm "Overwrite all existing files in $workdir?"
+			rm -rf "$workdir"
+		fi
+		
+		# Create the working directory.
+		mkdir -p "$workdir"
+		
+		# Optionally, rename files
+		if [ "$rename" == "yes" ]; then
+			renameFiles
+			exit
+		fi
+		
+		# Sort the files in the current folder in ascending order.
+		# This makes sure the oldest image is listed first.
+		# This is important because the first image defines time zero.
+		# Then loop through each image to overlay the timestamp.
+		# Sorting is done based on file name, not on metadata,
+		# because some images may not support it.
+		# Therefore it's important that the file names reflect
+		# the chronological order of the images.
+		# See getTimestamp() for timestamp generation from file name.
+		for image in $(ls "$inputdir"/*.$filetype | sort); do
+			overlayTimestamp "$image"
+		done
+	fi
+	
+	# Create the video.
+	animate
 }
 
-init
+while getopts "i:t:s:b:f:r:p:o:d:veh" opt; do
+	case "$opt" in
+		d) workdir="$OPTARG" ;;
+		t) filetype="$OPTARG" ;;
+		f) fgcolour="$OPTARG" ;;
+		r) framerate="$OPTARG" ;;
+		i) inputdir="$OPTARG" ;;
+		o) output="$OPTARG" ;;
+		s) fontsize="$OPTARG" ;;
+		p) position="$OPTARG" ;;
+		b) bgcolour="$OPTARG" ;;
+		v) mode=Video-only ;;
+		e) rename=yes ;;
+		h) usage; exit 0 ;;
+		*) usage; exit 0 ;;
+	esac
+done
+
+main
