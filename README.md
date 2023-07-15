@@ -13,7 +13,7 @@ On a Linux computer:
 3. `cd` to the folder where you have saved the `timelapse` script, and make the script executable: `chmod +x timelapse`.
 4. In a terminal, `cd` to the source image folder and execute the script: `timelapse`.
 
-By default, the script expects the image file name to reflect the timestamp in the format: `<yyyymmddHHMMSS>.png`. Variants including delimiters (e.g., `yyyy-mm-dd-HH-MM-SS.png`) are acceptable. The script will strip the file name of any non-numerical characters to generate the timestamp. Of course, the file name must correspond to a valid timestamp when stripped of such characters. The file extension can vary depending on the file format. The script supports most common image file formats (e.g., jpg, tif, bmp, webp) as long as imagemagick can convert it into the PNG format.
+By default, the script expects the image file name to reflect the timestamp in the format: `<yyyymmddHHMMSS>.png`. Variants including delimiters (e.g., `yyyy-mm-dd-HH-MM-SS.png`) are acceptable. The script will strip the file name of any non-numerical characters to generate the timestamp. Of course, the file name must correspond to a valid timestamp when stripped of such characters. The file extension can vary depending on the file format. The script supports most common image file formats (e.g., jpg, tif, bmp, webp) as long as imagemagick can convert them into the PNG format.
 
 The script will:
 - Create a `./timestamp` folder within the source image folder
