@@ -29,7 +29,7 @@ The position of the timestamp and its appearance can also be configured.
 
 ## Renaming files using third-party tools
 
-The following tools can be used to rename the image files to the required format (e.g., `<yyyymmddHHMMSS>.png`) before running `timelapse`:
+The following tools can be used to rename the image files to the required format (e.g., `<yyyymmddHHMMSS>.png`) in bulk before running `timelapse`:
 
 - [Thunar Bulk Renamer](https://docs.xfce.org/xfce/thunar/bulk-renamer/start)
 - [GPRename](https://gprename.sourceforge.net)
