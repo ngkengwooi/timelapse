@@ -1,21 +1,23 @@
 # Timelapse
 
-The timelapse script creates a timelapse video from a series of still images. It overlays the timestamp on to each frame/snapshot, so a ticking clock appears in the lower right corner of the video. The timestamp is extracted from the metadata (creation date) of the image files.
+The timelapse script creates a timelapse video from a series of still images. It overlays the timestamp on to each frame/snapshot, so a timer appears in the lower right corner of the video. The timestamp is generated based on the image file names by default, but can be extracted from the metadata (creation date) of the image files.
 
 ## Usage
 
 You need to capture the still images separately. This script does not deal with the image capture, but the post-processing. The images should lend themselves to be compiled into a video, e.g., the dimensions should be constant and the camera angle should not change.
 
 1. Place all source images in a single folder.
-2. Download the timelapse bash script and save it to an executable path, e.g., /usr/local/bin or ~/.local/bin. This allows you to execute the script anywhere across the file system. Alternatively, you may save the script to the same folder containing the source images and execute it only within that folder.
+2. Download the timelapse bash script and save it to an executable path, e.g., /usr/local/bin or ~/.local/bin. This allows you to execute the script anywhere across the file system.
 3. `cd` to the folder where you have saved the timelapse script, and make the script executable: `chmod +x timelapse`.
-4. In a terminal, `cd` to the source image folder.
-5. Execute the script:
+4. In a terminal, `cd` to the source image folder and execute the script: `timelapse`.
 
-   - `timelapse` if you've installed it to an executable path
-   - `./timestamp` if you're executing it from the source image folder
-     
-6. The snapshots and the video can be found under ./outdir.
+By default, the script expects the file name to reflect the timestamp in the format: <yyyymmddHHMMSS>.png. It will:
+- Create a ./timestamp folder within the source image folder
+- Timestamp the source images and save them to ./timelapse/<yyyymmddHHMMSS>.png
+- Compile the video and save it as ./timelapse/timelapse.mp4 
+
+These parameters can be changed by passing arguments to the `timelapse` command. Execute `timelapse -h` for details.
+
 
 ## Dependencies
 
