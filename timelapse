@@ -39,7 +39,7 @@ usage() {
 	echo ""
 	echo "  Options:"
 	echo "    -b BGCOLOUR      Background colour (default = $DEFAULT_BGCOLOUR)"
-	echo "    -d DIRECTORY     Output video file name (default = $DEFAULT_WORKDIR)"
+	echo "    -d DIRECTORY     Working directory (default = $DEFAULT_WORKDIR)"
 	echo "    -e               Rename source files based on extracted metadata"
 	echo "    -f FONTCOLOUR    Font colour (default = $DEFAULT_FGCOLOUR)"
 	echo "    -h               Show this help message"
