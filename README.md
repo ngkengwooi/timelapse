@@ -11,11 +11,11 @@ You need to capture the still images separately. This script does not deal with 
 3. `cd` to the folder where you have saved the timelapse script, and make the script executable: `chmod +x timelapse`.
 4. In a terminal, `cd` to the source image folder and execute the script: `timelapse`.
 
-By default, the script expects the image file name to reflect the timestamp in the format: <yyyymmddHHMMSS>.png. 
+By default, the script expects the image file name to reflect the timestamp in the format: \<yyyymmddHHMMSS\>.png. 
 
 The script will:
 - Create a ./timestamp folder within the source image folder
-- Timestamp the source images and save them to ./timelapse/<yyyymmddHHMMSS>.png
+- Timestamp the source images and save them to ./timelapse/\<yyyymmddHHMMSS\>.png
 - Compile the video and save it as ./timelapse/timelapse.mp4 
 
 These parameters can be changed by passing arguments to the `timelapse` command. Execute `timelapse -h` for details.
