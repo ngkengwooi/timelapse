@@ -1,6 +1,6 @@
 # Timelapse
 
-The `timelapse` script creates a timelapse video from a series of still images. It overlays the timestamp on to each frame/snapshot, so that a ticking timer appears in the video. The timestamp is generated based on the image file name by default, but the script includes an option to first rename the image file to reflect the timestamps in the metadata (creation date).
+The `timelapse` script creates a timelapse video from a series of still images. It overlays the timestamp on to each frame/snapshot, so that a ticking timer appears in the video. The timestamp is generated based on the image file name by default, but the script includes an option to first rename the image file to reflect the timestamp in the metadata (creation date).
 
 ## Usage
 
