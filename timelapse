@@ -46,7 +46,7 @@ usage() {
 	echo "    -o FILENAME      Output video file name (default = $DEFAULT_OUTPUT)"
 	echo "    -p POSITION      Timer position (default = $DEFAULT_POSITION)"
 	echo "    -r FRAMERATE     Video frame rate in fps (default = $DEFAULT_FRAMERATE)"
-	echo "    -s FONTSIZE      Font size in ponts (default = $DEFAULT_FONTSIZE)"
+	echo "    -s FONTSIZE      Font size in points (default = $DEFAULT_FONTSIZE)"
 	echo "    -t FILETYPE      Source image file type (default = $DEFAULT_FILETYPE)"
 	echo "    -v               Recreate video only, skip timestamping"
 	echo ""
