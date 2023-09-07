@@ -15,7 +15,7 @@ On a Linux computer:
 
 By default, the script will:
 
-- Create a `./timestamp` folder within the source image folder
+- Create a `./timelapse` folder within the source image folder
 - Timestamp the source images and save them to `./timelapse/<yyyymmddHHMMSS>.png`
 - Compile the video and save it as `./timelapse/timelapse.mp4`.
 
