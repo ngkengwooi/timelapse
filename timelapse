@@ -64,7 +64,7 @@ confirm() {
 
 renameFiles() {
 	# Perform a dry run first to check that all images have the required metadata.
-	# Do not rename any image if any of the images lack the require metadata.
+	# Do not rename any image if any of the images lack the required metadata.
 	# Dependency: exiftool
 	for image in "$inputdir"/*.$filetype; do
 		printf "Checking metadata for $(basename -- "$image")... "
